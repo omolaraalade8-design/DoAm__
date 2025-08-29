@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DoAm - Authentication</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #F0FDF4, #E0F2FE);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #90E5A3;
+            border-top: 4px solid #0EA5E9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <h2>DoAm dey process your login...</h2>
+        <p>Please wait while we complete your authentication.</p>
+    </div>
+
+    <script type="module">
+        // Handle the auth callback and redirect back to main app
+        const handleAuthCallback = async () => {
+            try {
+                // Get the current URL with auth parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const accessToken = urlParams.get('access_token');
+                const refreshToken = urlParams.get('refresh_token');
+                
+                if (accessToken) {
+                    // Store tokens temporarily and redirect to main app
+                    sessionStorage.setItem('supabase_auth_token', accessToken);
+                    if (refreshToken) {
+                        sessionStorage.setItem('supabase_refresh_token', refreshToken);
+                    }
+                }
+                
+                // Redirect back to main app
+                window.location.href = '/';
+            } catch (error) {
+                console.error('Auth callback error:', error);
+                // Redirect to main app even on error
+                window.location.href = '/';
+            }
+        };
+
+        // Run the callback handler
+        handleAuthCallback();
+    </script>
+</body>
+</html>
